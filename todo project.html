@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todo list with js</title>
+
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        body{
+            background-image:linear-gradient(to right,#f2c572,#376b55);
+            width: 50%;
+            margin: 10rem auto;
+        }
+
+        h1{
+            text-align: end;
+        }
+
+        .input{
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .input input{
+            width: 20rem;
+            height: 2.5rem;
+            padding: 0.2rem;
+            font-size: 1.6rem;
+            letter-spacing: 0.1rem;
+            border-radius: 5px;
+            border: 2px solid salmon;
+        }
+
+        .input button{
+            width: 5rem;
+            height: 2.5rem;
+            font-size: 2rem;
+            background-color:rgb(149, 247, 3);
+            color: rgb(15, 20, 14);
+            border: 3px solid rgb(7, 238, 73);
+            padding: 5px;
+            line-height: .5;
+            border-radius: 7px;
+        }
+
+        .input button:hover{
+            box-shadow: 0px 0px 2px 1px rgb(4, 249, 90);
+            background-color: transparent;
+            color: rgb(7, 247, 7);
+            
+        }
+
+        .todo-list--items .item{
+
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            font-size: 1.5rem;
+            gap: 3rem;
+            margin-top: 1rem;
+
+            & button{
+                float: left;
+                font-size: 1.3rem;
+                width:max-content;
+                height: 2.5rem;
+                background-color:red;
+                color: rgb(21, 17, 17);
+                border: 3px solid rgb(255, 6, 6);
+                padding: 5px;
+                line-height: .5;
+                border-radius: .5rem;
+
+                &:hover{
+                    box-shadow: 0px 0px 2px 1px rgb(249, 4, 4);
+                    color: rgb(6, 5, 5);
+                    background-color: transparent;
+                    }
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    
+
+    <h1>TODO WITH JAVASCRIPT</h1>
+    
+    
+    <div class="input">
+        <input type="text" name="value" id="input">
+        <button id="add" >ADD</button>
+    </div>
+    <form>
+    <section class="todo-list--items">
+
+    </section>
+</form>
+
+    <script>
+        var input = document.getElementById("input");
+        var  btn = document.getElementById("add");
+
+        var list = document.querySelector(".todo-list--items");
+
+        const getDataFromLocalStorage = () =>{
+            
+          return JSON.parse(localStorage.getItem("todoData"))
+        }
+
+        const remoteItem= (e) =>{
+            
+           const todoToRemove = e.target;
+
+        //    let data = todoToRemove.previousElementSibling;
+           let data = todoToRemove.previousElementSibling.innerText;
+           let parentDiv = todoToRemove.parentElement;
+
+           localArray = localArray.filter((item)=>{
+                return item!==data;
+                 
+           })
+
+           localStorage.setItem("todoData",JSON.stringify(localArray));
+
+           console.log(localArray);
+           parentDiv.remove();
+
+        }
+        const todoDynamicElementAdd = (element) =>{
+
+            const divElement = document.createElement("div");
+            divElement.classList.add("item");
+            divElement.innerHTML = `<li>${element}</li>
+                <button class="deleteBtn">DELETE</button>`;
+
+            list.append(divElement);
+        }
+
+        const printData = () =>{
+            
+            localArray.forEach((item)=>{
+                todoDynamicElementAdd(item)
+            })
+        }
+
+        let localArray = getDataFromLocalStorage() || [];
+
+        printData()
+
+        const handleClick = () =>{
+
+            if(!localArray.includes(input.value.trim()) && input.value.trim() !== "")
+            {
+                localArray.push(input.value.trim());
+
+                localArray=[... new Set(localArray)];// avoiding reduplicate data
+
+                localStorage.setItem("todoData",JSON.stringify(localArray));
+
+                todoDynamicElementAdd(input.value.trim());
+                input.value="";
+            }    
+        }
+
+        btn.addEventListener("click",handleClick)
+        
+        // for delete items 
+
+        list.addEventListener("click",(e)=>{
+
+            e.preventDefault()
+            if(e.target.classList.contains("deleteBtn")){
+                remoteItem(e); 
+            }
+           
+        })
+    </script>
+</body>
+</html>
